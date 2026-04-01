@@ -2,3 +2,4 @@
 .venv
 *.cast
 *.egg-info
+*.json
