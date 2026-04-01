@@ -1,0 +1,14 @@
+[project]
+name = "hexlet-code"
+version = "0.1.0"
+description = "File difference calculator"
+authors = [
+    { name = "Alexandra Minina", email = "i@minina-work.ru" },
+    { name = "Hexlet", email = "hexlet@hexlet.io" }
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+gendiff = "gendiff:main"

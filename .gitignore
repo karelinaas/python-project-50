@@ -1,0 +1,4 @@
+.idea
+.venv
+*.cast
+*.egg-info
