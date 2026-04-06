@@ -1,6 +1,6 @@
 import argparse
-import json
 from gendiff import generate_diff
+from gendiff.parser import parse_file
 
 
 def main():
@@ -12,11 +12,8 @@ def main():
     
     args = parser.parse_args()
 
-    with open(args.first_file, "r") as f:
-        first_file_data = json.load(f)
-
-    with open(args.second_file, "r") as f:
-        second_file_data = json.load(f)
+    first_file_data = parse_file(args.first_file)
+    second_file_data = parse_file(args.second_file)
 
     diff_result = generate_diff(first_file_data, second_file_data)
     print(diff_result)
