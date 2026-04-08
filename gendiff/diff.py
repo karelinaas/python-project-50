@@ -1,16 +1,20 @@
+from .diff_builder import build_diff
+from .formatter import format_stylish
+
+
 def generate_diff(first_data: dict, second_data: dict) -> str:
-    keys = sorted(set(first_data.keys()) | set(second_data.keys()))
-    diff_lines = []
+    """
+    Генерирует различия между двумя словарями и возвращает отформатированную строку.
     
-    for key in keys:
-        if key in first_data and key not in second_data:
-            diff_lines.append(f"  - {key}: {first_data[key]}")
-        elif key not in first_data and key in second_data:
-            diff_lines.append(f"  + {key}: {second_data[key]}")
-        elif first_data[key] != second_data[key]:
-            diff_lines.append(f"  - {key}: {first_data[key]}")
-            diff_lines.append(f"  + {key}: {second_data[key]}")
-        else:
-            diff_lines.append(f"    {key}: {first_data[key]}")
+    Args:
+        first_data: Первый словарь для сравнения
+        second_data: Второй словарь для сравнения
+        
+    Returns:
+        Отформатированная строка с различиями
+    """
+    # Строим внутреннее представление различий
+    diff = build_diff(first_data, second_data)
     
-    return "{\n" + "\n".join(diff_lines) + "\n}"
+    # Форматируем результат
+    return format_stylish(diff)
