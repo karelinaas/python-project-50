@@ -13,7 +13,7 @@ def test_generate_diff_added_key():
     second_data = {"host": "hexlet.io", "timeout": 50, "verbose": True}
     
     result = generate_diff(first_data, second_data)
-    expected = "{\n    host: hexlet.io\n    timeout: 50\n  + verbose: True\n}"
+    expected = "{\n    host: hexlet.io\n    timeout: 50\n  + verbose: true\n}"
     
     assert result == expected
 
@@ -24,7 +24,7 @@ def test_generate_diff_removed_key():
     second_data = {"host": "hexlet.io", "timeout": 50}
     
     result = generate_diff(first_data, second_data)
-    expected = "{\n    host: hexlet.io\n    timeout: 50\n  - verbose: True\n}"
+    expected = "{\n    host: hexlet.io\n    timeout: 50\n  - verbose: true\n}"
     
     assert result == expected
 
@@ -55,7 +55,7 @@ def test_generate_diff_complex():
     }
     
     result = generate_diff(first_data, second_data)
-    expected = "{\n  - follow: False\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: True\n}"
+    expected = "{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: true\n}"
     
     assert result == expected
 
@@ -220,8 +220,8 @@ def test_generate_diff_complex_yaml():
         
         result = generate_diff(first_parsed, second_parsed)
         expected = (
-            "{\n  - follow: False\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  "
-            "- timeout: 50\n  + timeout: 20\n  + verbose: True\n}"
+            "{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  "
+            "- timeout: 50\n  + timeout: 20\n  + verbose: true\n}"
         )
         
         assert result == expected
@@ -264,8 +264,8 @@ def test_generate_diff_nested_structures():
     assert "foo: baz" in result
     assert "- setting2: 200" in result
     assert "+ setting4: new value" in result
-    assert "- setting3: True" in result
-    assert "+ setting3: False" in result
+    assert "- setting3: true" in result
+    assert "+ setting3: false" in result
 
 
 def test_generate_diff_deeply_nested():
@@ -308,5 +308,5 @@ def test_generate_diff_deeply_nested():
     assert "+ password: new-secret" in result
     assert "- timeout: 30" in result
     assert "+ timeout: 60" in result
-    assert "+ ssl: True" in result
+    assert "+ ssl: true" in result
     assert "- retry: 3" in result
