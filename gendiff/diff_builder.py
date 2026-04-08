@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict
+from typing import Any
 
 
 class DiffStatus(Enum):
@@ -20,7 +20,7 @@ class DiffNode:
         status: DiffStatus,
         old_value: Any = None,
         new_value: Any = None,
-        children: Dict[str, 'DiffNode'] = None
+        children: dict[str, 'DiffNode'] = None
     ):
         self.key = key
         self.status = status
@@ -32,7 +32,7 @@ class DiffNode:
         return f"DiffNode(key={self.key}, status={self.status}, old_value={self.old_value}, new_value={self.new_value})"
 
 
-def build_diff(first_data: Dict[str, Any], second_data: Dict[str, Any]) -> Dict[str, DiffNode]:
+def build_diff(first_data: dict[str, Any], second_data: dict[str, Any]) -> dict[str, DiffNode]:
     """
     Строит внутреннее представление различий между двумя словарями.
     

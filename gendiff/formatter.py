@@ -1,8 +1,8 @@
-from typing import Dict, Any, List
+from typing import Any
 from .diff_builder import DiffNode, DiffStatus
 
 
-def stylish(diff: Dict[str, DiffNode]) -> str:
+def stylish(diff: dict[str, DiffNode]) -> str:
     """
     Форматирует diff в стильный формат с отступами.
     
@@ -18,7 +18,7 @@ def stylish(diff: Dict[str, DiffNode]) -> str:
     return "\n".join(lines)
 
 
-def _format_diff_nodes(diff: Dict[str, DiffNode], indent: int) -> List[str]:
+def _format_diff_nodes(diff: dict[str, DiffNode], indent: int) -> list[str]:
     """
     Рекурсивно форматирует узлы diff.
     
@@ -39,7 +39,7 @@ def _format_diff_nodes(diff: Dict[str, DiffNode], indent: int) -> List[str]:
     return lines
 
 
-def _format_node(key: str, node: DiffNode, indent: int) -> List[str]:
+def _format_node(key: str, node: DiffNode, indent: int) -> list[str]:
     """
     Форматирует отдельный узел diff.
     
