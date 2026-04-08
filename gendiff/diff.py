@@ -1,14 +1,15 @@
 from .diff_builder import build_diff
-from .formatter import format_stylish
+from .formatter import stylish
 
 
-def generate_diff(first_data: dict, second_data: dict) -> str:
+def generate_diff(first_data: dict, second_data: dict, format_name: str = "stylish") -> str:
     """
     Генерирует различия между двумя словарями и возвращает отформатированную строку.
     
     Args:
         first_data: Первый словарь для сравнения
         second_data: Второй словарь для сравнения
+        format_name: Название форматера (по умолчанию "stylish")
         
     Returns:
         Отформатированная строка с различиями
@@ -16,5 +17,8 @@ def generate_diff(first_data: dict, second_data: dict) -> str:
     # Строим внутреннее представление различий
     diff = build_diff(first_data, second_data)
     
-    # Форматируем результат
-    return format_stylish(diff)
+    # Выбираем форматер и форматируем результат
+    if format_name == "stylish":
+        return stylish(diff)
+    else:
+        raise ValueError(f"Unsupported format: {format_name}")

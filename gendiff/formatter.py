@@ -2,7 +2,7 @@ from typing import Dict, Any, List
 from .diff_builder import DiffNode, DiffStatus
 
 
-def format_stylish(diff: Dict[str, DiffNode]) -> str:
+def stylish(diff: Dict[str, DiffNode]) -> str:
     """
     Форматирует diff в стильный формат с отступами.
     
