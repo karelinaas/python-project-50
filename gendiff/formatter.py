@@ -1,4 +1,6 @@
+import json
 from typing import Any
+
 from .diff_builder import DiffNode, DiffStatus
 
 
@@ -31,6 +33,26 @@ def plain(diff: dict[str, DiffNode]) -> str:
     lines = []
     _format_plain_nodes(diff, "", lines)
     return "\n".join(lines)
+
+
+def json_formatter(diff: dict[str, DiffNode]) -> str:
+    """
+    Форматирует diff в структурированный JSON формат.
+
+    Args:
+        diff: Внутреннее представление различий
+
+    Returns:
+        Отформатированная JSON строка с различиями
+    """
+    result = {}
+    sorted_keys = sorted(diff.keys())
+
+    for key in sorted_keys:
+        node = diff[key]
+        result[key] = _format_node_for_json(node)
+
+    return json.dumps(result, indent=2)
 
 
 def _format_diff_nodes(diff: dict[str, DiffNode], indent: int) -> list[str]:
@@ -180,3 +202,36 @@ def _format_plain_value(value: Any) -> str:
         return "[complex value]"
     else:
         return str(value)
+
+
+def _format_node_for_json(node: DiffNode) -> dict[str, Any]:
+    """
+    Форматирует узел diff для JSON вывода.
+
+    Args:
+        node: Узел различий
+
+    Returns:
+        Словарь с информацией об узле в формате JSON
+    """
+    result = {
+        "status": node.status.value
+    }
+    
+    if node.status == DiffStatus.ADDED:
+        result["value"] = node.new_value
+    elif node.status == DiffStatus.REMOVED:
+        result["value"] = node.old_value
+    elif node.status == DiffStatus.CHANGED:
+        result["old_value"] = node.old_value
+        result["new_value"] = node.new_value
+    elif node.status == DiffStatus.UNCHANGED:
+        result["value"] = node.old_value
+    elif node.status == DiffStatus.NESTED:
+        children = {}
+        sorted_keys = sorted(node.children.keys())
+        for key in sorted_keys:
+            children[key] = _format_node_for_json(node.children[key])
+        result["children"] = children
+    
+    return result

@@ -1,4 +1,5 @@
-from gendiff.formatter import plain
+import json
+from gendiff.formatter import plain, json_formatter
 from gendiff.diff_builder import DiffNode, DiffStatus
 
 
@@ -339,3 +340,398 @@ def test_plain_complex_changed_values():
     
     assert "Property 'dict1' was updated. From [complex value] to [complex value]" in lines
     assert "Property 'list1' was updated. From [complex value] to [complex value]" in lines
+
+
+def test_json_added_property():
+    """Тестирует JSON форматирование добавленного свойства."""
+    diff = {
+        "verbose": DiffNode(
+            key="verbose",
+            status=DiffStatus.ADDED,
+            new_value=True
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "verbose": {
+            "status": "added",
+            "value": True
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_removed_property():
+    """Тестирует JSON форматирование удаленного свойства."""
+    diff = {
+        "timeout": DiffNode(
+            key="timeout",
+            status=DiffStatus.REMOVED,
+            old_value=50
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "timeout": {
+            "status": "removed",
+            "value": 50
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_changed_property():
+    """Тестирует JSON форматирование измененного свойства."""
+    diff = {
+        "host": DiffNode(
+            key="host",
+            status=DiffStatus.CHANGED,
+            old_value="localhost",
+            new_value="hexlet.io"
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "host": {
+            "status": "changed",
+            "old_value": "localhost",
+            "new_value": "hexlet.io"
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_unchanged_property():
+    """Тестирует JSON форматирование неизмененного свойства."""
+    diff = {
+        "host": DiffNode(
+            key="host",
+            status=DiffStatus.UNCHANGED,
+            old_value="hexlet.io"
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "host": {
+            "status": "unchanged",
+            "value": "hexlet.io"
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_nested_structure():
+    """Тестирует JSON форматирование вложенной структуры."""
+    diff = {
+        "common": DiffNode(
+            key="common",
+            status=DiffStatus.NESTED,
+            children={
+                "setting1": DiffNode(
+                    key="setting1",
+                    status=DiffStatus.ADDED,
+                    new_value="value"
+                ),
+                "setting2": DiffNode(
+                    key="setting2",
+                    status=DiffStatus.CHANGED,
+                    old_value=100,
+                    new_value=200
+                ),
+                "setting3": DiffNode(
+                    key="setting3",
+                    status=DiffStatus.REMOVED,
+                    old_value=True
+                )
+            }
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "common": {
+            "status": "nested",
+            "children": {
+                "setting1": {
+                    "status": "added",
+                    "value": "value"
+                },
+                "setting2": {
+                    "status": "changed",
+                    "old_value": 100,
+                    "new_value": 200
+                },
+                "setting3": {
+                    "status": "removed",
+                    "value": True
+                }
+            }
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_multiple_properties():
+    """Тестирует JSON форматирование нескольких свойств."""
+    diff = {
+        "host": DiffNode(
+            key="host",
+            status=DiffStatus.UNCHANGED,
+            old_value="hexlet.io"
+        ),
+        "timeout": DiffNode(
+            key="timeout",
+            status=DiffStatus.CHANGED,
+            old_value=50,
+            new_value=20
+        ),
+        "verbose": DiffNode(
+            key="verbose",
+            status=DiffStatus.ADDED,
+            new_value=True
+        ),
+        "proxy": DiffNode(
+            key="proxy",
+            status=DiffStatus.REMOVED,
+            old_value="123.234.53.22"
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "host": {
+            "status": "unchanged",
+            "value": "hexlet.io"
+        },
+        "proxy": {
+            "status": "removed",
+            "value": "123.234.53.22"
+        },
+        "timeout": {
+            "status": "changed",
+            "old_value": 50,
+            "new_value": 20
+        },
+        "verbose": {
+            "status": "added",
+            "value": True
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_empty_diff():
+    """Тестирует JSON форматирование пустого diff."""
+    diff = {}
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {}
+    
+    assert parsed == expected
+
+
+def test_json_different_value_types():
+    """Тестирует JSON форматирование различных типов значений."""
+    diff = {
+        "string_prop": DiffNode(
+            key="string_prop",
+            status=DiffStatus.ADDED,
+            new_value="test string"
+        ),
+        "int_prop": DiffNode(
+            key="int_prop",
+            status=DiffStatus.ADDED,
+            new_value=42
+        ),
+        "float_prop": DiffNode(
+            key="float_prop",
+            status=DiffStatus.ADDED,
+            new_value=3.14
+        ),
+        "bool_prop": DiffNode(
+            key="bool_prop",
+            status=DiffStatus.ADDED,
+            new_value=True
+        ),
+        "null_prop": DiffNode(
+            key="null_prop",
+            status=DiffStatus.ADDED,
+            new_value=None
+        ),
+        "list_prop": DiffNode(
+            key="list_prop",
+            status=DiffStatus.ADDED,
+            new_value=[1, 2, 3]
+        ),
+        "dict_prop": DiffNode(
+            key="dict_prop",
+            status=DiffStatus.ADDED,
+            new_value={"key": "value"}
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "bool_prop": {
+            "status": "added",
+            "value": True
+        },
+        "dict_prop": {
+            "status": "added",
+            "value": {"key": "value"}
+        },
+        "float_prop": {
+            "status": "added",
+            "value": 3.14
+        },
+        "int_prop": {
+            "status": "added",
+            "value": 42
+        },
+        "list_prop": {
+            "status": "added",
+            "value": [1, 2, 3]
+        },
+        "null_prop": {
+            "status": "added",
+            "value": None
+        },
+        "string_prop": {
+            "status": "added",
+            "value": "test string"
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_deeply_nested():
+    """Тестирует JSON форматирование глубоко вложенной структуры."""
+    diff = {
+        "database": DiffNode(
+            key="database",
+            status=DiffStatus.NESTED,
+            children={
+                "credentials": DiffNode(
+                    key="credentials",
+                    status=DiffStatus.NESTED,
+                    children={
+                        "password": DiffNode(
+                            key="password",
+                            status=DiffStatus.CHANGED,
+                            old_value="secret",
+                            new_value="new-secret"
+                        )
+                    }
+                )
+            }
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "database": {
+            "status": "nested",
+            "children": {
+                "credentials": {
+                    "status": "nested",
+                    "children": {
+                        "password": {
+                            "status": "changed",
+                            "old_value": "secret",
+                            "new_value": "new-secret"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_complex_changed_values():
+    """Тестирует JSON форматирование изменения сложных значений."""
+    diff = {
+        "dict1": DiffNode(
+            key="dict1",
+            status=DiffStatus.CHANGED,
+            old_value={"a": 1, "b": 2},
+            new_value={"c": 3, "d": 4}
+        ),
+        "list1": DiffNode(
+            key="list1",
+            status=DiffStatus.CHANGED,
+            old_value=[1, 2, 3],
+            new_value=[4, 5, 6]
+        )
+    }
+    
+    result = json_formatter(diff)
+    parsed = json.loads(result)
+    
+    expected = {
+        "dict1": {
+            "status": "changed",
+            "old_value": {"a": 1, "b": 2},
+            "new_value": {"c": 3, "d": 4}
+        },
+        "list1": {
+            "status": "changed",
+            "old_value": [1, 2, 3],
+            "new_value": [4, 5, 6]
+        }
+    }
+    
+    assert parsed == expected
+
+
+def test_json_output_format():
+    """Тестирует формат вывода JSON (отступы и структура)."""
+    diff = {
+        "key": DiffNode(
+            key="key",
+            status=DiffStatus.ADDED,
+            new_value="value"
+        )
+    }
+    
+    result = json_formatter(diff)
+    
+    assert result.startswith("{\n")
+    assert result.endswith("\n}")
+    assert '"status": "added"' in result
+    assert '"value": "value"' in result
+    
+    parsed = json.loads(result)
+    assert "key" in parsed
+    assert parsed["key"]["status"] == "added"
+    assert parsed["key"]["value"] == "value"

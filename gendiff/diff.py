@@ -1,5 +1,5 @@
 from .diff_builder import build_diff
-from .formatter import plain, stylish
+from .formatter import json_formatter, plain, stylish
 
 
 def generate_diff(first_data: dict, second_data: dict, format_name: str = "stylish") -> str:
@@ -23,5 +23,7 @@ def generate_diff(first_data: dict, second_data: dict, format_name: str = "styli
             return stylish(diff)
         case "plain":
             return plain(diff)
+        case "json":
+            return json_formatter(diff)
         case _:
             raise ValueError(f"Unsupported format: {format_name}")
