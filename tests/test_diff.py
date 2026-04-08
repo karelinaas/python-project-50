@@ -66,7 +66,7 @@ def test_generate_diff_empty_files():
     second_data = {}
     
     result = generate_diff(first_data, second_data)
-    expected = "{\n\n}"
+    expected = "{\n}"
     
     assert result == expected
 
@@ -225,3 +225,88 @@ def test_generate_diff_complex_yaml():
         )
         
         assert result == expected
+
+
+def test_generate_diff_nested_structures():
+    """Тестирует diff с вложенными структурами."""
+    first_data = {
+        "common": {
+            "setting1": "Value 1",
+            "setting2": 200,
+            "setting3": True
+        },
+        "group1": {
+            "baz": "bas"
+        },
+        "group2": {
+            "foo": "bar"
+        }
+    }
+    
+    second_data = {
+        "common": {
+            "setting1": "Value 1",
+            "setting3": False,
+            "setting4": "new value"
+        },
+        "group1": {
+            "foo": "bar",
+            "baz": "bars"
+        },
+        "group3": {
+            "foo": "baz"
+        }
+    }
+    
+    result = generate_diff(first_data, second_data)
+    
+    assert "group3" in result
+    assert "foo: baz" in result
+    assert "- setting2: 200" in result
+    assert "+ setting4: new value" in result
+    assert "- setting3: True" in result
+    assert "+ setting3: False" in result
+
+
+def test_generate_diff_deeply_nested():
+    """Тестирует diff с глубоко вложенными структурами."""
+    first_data = {
+        "database": {
+            "host": "localhost",
+            "port": 5432,
+            "credentials": {
+                "username": "admin",
+                "password": "secret"
+            },
+            "options": {
+                "timeout": 30,
+                "retry": 3
+            }
+        }
+    }
+    
+    second_data = {
+        "database": {
+            "host": "remote-server",
+            "port": 5432,
+            "credentials": {
+                "username": "admin",
+                "password": "new-secret"
+            },
+            "options": {
+                "timeout": 60,
+                "ssl": True
+            }
+        }
+    }
+    
+    result = generate_diff(first_data, second_data)
+    
+    assert "- host: localhost" in result
+    assert "+ host: remote-server" in result
+    assert "- password: secret" in result
+    assert "+ password: new-secret" in result
+    assert "- timeout: 30" in result
+    assert "+ timeout: 60" in result
+    assert "+ ssl: True" in result
+    assert "- retry: 3" in result
