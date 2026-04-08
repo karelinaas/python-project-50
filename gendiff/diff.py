@@ -1,5 +1,5 @@
 from .diff_builder import build_diff
-from .formatter import stylish
+from .formatter import plain, stylish
 
 
 def generate_diff(first_data: dict, second_data: dict, format_name: str = "stylish") -> str:
@@ -18,7 +18,10 @@ def generate_diff(first_data: dict, second_data: dict, format_name: str = "styli
     diff = build_diff(first_data, second_data)
     
     # Выбираем форматер и форматируем результат
-    if format_name == "stylish":
-        return stylish(diff)
-    else:
-        raise ValueError(f"Unsupported format: {format_name}")
+    match format_name:
+        case "stylish":
+            return stylish(diff)
+        case "plain":
+            return plain(diff)
+        case _:
+            raise ValueError(f"Unsupported format: {format_name}")

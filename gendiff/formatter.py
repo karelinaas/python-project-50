@@ -18,6 +18,21 @@ def stylish(diff: dict[str, DiffNode]) -> str:
     return "\n".join(lines)
 
 
+def plain(diff: dict[str, DiffNode]) -> str:
+    """
+    Форматирует diff в plain формат с путями свойств.
+
+    Args:
+        diff: Внутреннее представление различий
+
+    Returns:
+        Отформатированная строка с различиями
+    """
+    lines = []
+    _format_plain_nodes(diff, "", lines)
+    return "\n".join(lines)
+
+
 def _format_diff_nodes(diff: dict[str, DiffNode], indent: int) -> list[str]:
     """
     Рекурсивно форматирует узлы diff.
@@ -108,5 +123,60 @@ def _format_value(value: Any, indent: int) -> str:
             lines.append(f"{' ' * (indent + 4)}{formatted_item}")
         lines.append(f"{' ' * indent}]")
         return "\n".join(lines)
+    else:
+        return str(value)
+
+
+def _format_plain_nodes(diff: dict[str, DiffNode], path: str, lines: list[str]) -> None:
+    """
+    Рекурсивно форматирует узлы diff в plain формате.
+
+    Args:
+        diff: Словарь с узлами различий
+        path: Текущий путь к свойству
+        lines: Список для накопления строк
+    """
+    sorted_keys = sorted(diff.keys())
+
+    for key in sorted_keys:
+        node = diff[key]
+        current_path = f"{path}.{key}" if path else key
+
+        if node.status == DiffStatus.ADDED:
+            if isinstance(node.new_value, (dict, list)):
+                value_desc = "[complex value]"
+            else:
+                value_desc = _format_plain_value(node.new_value)
+            lines.append(f"Property '{current_path}' was added with value: {value_desc}")
+        elif node.status == DiffStatus.REMOVED:
+            lines.append(f"Property '{current_path}' was removed")
+        elif node.status == DiffStatus.CHANGED:
+            old_desc = _format_plain_value(node.old_value)
+            new_desc = _format_plain_value(node.new_value)
+            lines.append(f"Property '{current_path}' was updated. From {old_desc} to {new_desc}")
+        elif node.status == DiffStatus.NESTED:
+            _format_plain_nodes(node.children, current_path, lines)
+
+
+def _format_plain_value(value: Any) -> str:
+    """
+    Форматирует значение для plain вывода.
+
+    Args:
+        value: Значение для форматирования
+
+    Returns:
+        Отформатированное значение
+    """
+    if value is None:
+        return "null"
+    elif isinstance(value, bool):
+        return "true" if value else "false"
+    elif isinstance(value, (int, float)):
+        return str(value)
+    elif isinstance(value, str):
+        return f"'{value}'"
+    elif isinstance(value, (dict, list)):
+        return "[complex value]"
     else:
         return str(value)
