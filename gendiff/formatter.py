@@ -118,6 +118,30 @@ def _format_node(key: str, node: DiffNode, indent: int) -> list[str]:
         raise ValueError(f"Unknown status: {node.status}")
 
 
+def _format_dict_value(value: dict, indent: int) -> str:
+    """Format dictionary value for output."""
+    if not value:
+        return "{}"
+    lines = ["{"]
+    for k, v in sorted(value.items()):
+        formatted_val = _format_value(v, indent + 4)
+        lines.append(f"{' ' * (indent + 4)}{k}: {formatted_val}")
+    lines.append(f"{' ' * indent}}}")
+    return "\n".join(lines)
+
+
+def _format_list_value(value: list, indent: int) -> str:
+    """Format list value for output."""
+    if not value:
+        return "[]"
+    lines = ["["]
+    for item in value:
+        formatted_item = _format_value(item, indent + 4)
+        lines.append(f"{' ' * (indent + 4)}{formatted_item}")
+    lines.append(f"{' ' * indent}]")
+    return "\n".join(lines)
+
+
 def _format_value(value: Any, indent: int) -> str:
     """
     Форматирует значение для вывода.
@@ -138,23 +162,9 @@ def _format_value(value: Any, indent: int) -> str:
     elif isinstance(value, str):
         return value
     elif isinstance(value, dict):
-        if not value:
-            return "{}"
-        lines = ["{"]
-        for k, v in sorted(value.items()):
-            formatted_val = _format_value(v, indent + 4)
-            lines.append(f"{' ' * (indent + 4)}{k}: {formatted_val}")
-        lines.append(f"{' ' * indent}}}")
-        return "\n".join(lines)
+        return _format_dict_value(value, indent)
     elif isinstance(value, list):
-        if not value:
-            return "[]"
-        lines = ["["]
-        for item in value:
-            formatted_item = _format_value(item, indent + 4)
-            lines.append(f"{' ' * (indent + 4)}{formatted_item}")
-        lines.append(f"{' ' * indent}]")
-        return "\n".join(lines)
+        return _format_list_value(value, indent)
     else:
         return str(value)
 
