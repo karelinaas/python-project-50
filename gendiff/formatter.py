@@ -89,16 +89,26 @@ def _format_node(key: str, node: DiffNode, indent: int) -> list[str]:
         Список отформатированных строк
     """
     if node.status == DiffStatus.ADDED:
-        return [f"{' ' * (indent - 2)}+ {key}: {_format_value(node.new_value, indent)}"]
+        return [
+            f"{' ' * (indent - 2)}+ {key}: "
+            f"{_format_value(node.new_value, indent)}"
+        ]
     elif node.status == DiffStatus.REMOVED:
-        return [f"{' ' * (indent - 2)}- {key}: {_format_value(node.old_value, indent)}"]
+        return [
+            f"{' ' * (indent - 2)}- {key}: "
+            f"{_format_value(node.old_value, indent)}"
+        ]
     elif node.status == DiffStatus.CHANGED:
         return [
-            f"{' ' * (indent - 2)}- {key}: {_format_value(node.old_value, indent)}",
-            f"{' ' * (indent - 2)}+ {key}: {_format_value(node.new_value, indent)}"
+            f"{' ' * (indent - 2)}- {key}: "
+            f"{_format_value(node.old_value, indent)}",
+            f"{' ' * (indent - 2)}+ {key}: "
+            f"{_format_value(node.new_value, indent)}"
         ]
     elif node.status == DiffStatus.UNCHANGED:
-        return [f"{' ' * indent}{key}: {_format_value(node.old_value, indent)}"]
+        return [
+            f"{' ' * indent}{key}: {_format_value(node.old_value, indent)}"
+        ]
     elif node.status == DiffStatus.NESTED:
         lines = [f"{' ' * indent}{key}: {{"]
         lines.extend(_format_diff_nodes(node.children, indent + 4))
@@ -149,7 +159,10 @@ def _format_value(value: Any, indent: int) -> str:
         return str(value)
 
 
-def _format_plain_nodes(diff: dict[str, DiffNode], path: str, lines: list[str]) -> None:
+def _format_plain_nodes(
+    diff: dict[str, DiffNode],
+    path: str, lines: list[str],
+) -> None:
     """
     Рекурсивно форматирует узлы diff в plain формате.
 
@@ -169,13 +182,18 @@ def _format_plain_nodes(diff: dict[str, DiffNode], path: str, lines: list[str]) 
                 value_desc = "[complex value]"
             else:
                 value_desc = _format_plain_value(node.new_value)
-            lines.append(f"Property '{current_path}' was added with value: {value_desc}")
+            lines.append(
+                f"Property '{current_path}' was added with value: {value_desc}"
+            )
         elif node.status == DiffStatus.REMOVED:
             lines.append(f"Property '{current_path}' was removed")
         elif node.status == DiffStatus.CHANGED:
             old_desc = _format_plain_value(node.old_value)
             new_desc = _format_plain_value(node.new_value)
-            lines.append(f"Property '{current_path}' was updated. From {old_desc} to {new_desc}")
+            lines.append(
+                f"Property '{current_path}' was updated. "
+                f"From {old_desc} to {new_desc}"
+            )
         elif node.status == DiffStatus.NESTED:
             _format_plain_nodes(node.children, current_path, lines)
 

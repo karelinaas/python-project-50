@@ -55,7 +55,10 @@ def test_generate_diff_complex():
     }
     
     result = generate_diff(first_data, second_data)
-    expected = "{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: true\n}"
+    expected = (
+        "{\n  - follow: false\n    host: hexlet.io\n  - proxy: "
+        "123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: true\n}"
+    )
     
     assert result == expected
 
@@ -114,7 +117,9 @@ def test_generate_diff_with_files():
             second_data = json.load(f)
         
         result = generate_diff(first_data, second_data)
-        expected = "{\n    host: hexlet.io\n  - timeout: 50\n  + timeout: 20\n}"
+        expected = (
+            "{\n    host: hexlet.io\n  - timeout: 50\n  + timeout: 20\n}"
+        )
         
         assert result == expected
 
@@ -188,7 +193,9 @@ def test_generate_diff_with_yaml_files():
         second_data = parse_file(file2_path)
         
         result = generate_diff(first_data, second_data)
-        expected = "{\n    host: hexlet.io\n  - timeout: 50\n  + timeout: 20\n}"
+        expected = (
+            "{\n    host: hexlet.io\n  - timeout: 50\n  + timeout: 20\n}"
+        )
         
         assert result == expected
 
@@ -220,7 +227,8 @@ def test_generate_diff_complex_yaml():
         
         result = generate_diff(first_parsed, second_parsed)
         expected = (
-            "{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  "
+            "{\n  - follow: false\n    host: hexlet.io\n  "
+            "- proxy: 123.234.53.22\n  "
             "- timeout: 50\n  + timeout: 20\n  + verbose: true\n}"
         )
         

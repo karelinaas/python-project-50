@@ -78,9 +78,10 @@ def test_plain_changed_to_complex_value():
             new_value={"nested": {"key": "value"}}
         )
     }
-    
     result = plain(diff)
-    expected = "Property 'config' was updated. From 'simple' to [complex value]"
+    assert result == (
+        "Property 'config' was updated. From 'simple' to [complex value]"
+    )
 
 
 def test_plain_changed_from_complex_value():
@@ -95,9 +96,9 @@ def test_plain_changed_from_complex_value():
     }
     
     result = plain(diff)
-    expected = "Property 'data' was updated. From [complex value] to 'new value'"
-    
-    assert result == expected
+    assert result == (
+        "Property 'data' was updated. From [complex value] to 'new value'"
+    )
 
 
 def test_plain_nested_structure():
@@ -245,7 +246,9 @@ def test_plain_different_value_types():
     assert "Property 'float_prop' was added with value: 3.14" in lines
     assert "Property 'bool_prop' was added with value: true" in lines
     assert "Property 'null_prop' was added with value: null" in lines
-    assert "Property 'list_prop' was added with value: [complex value]" in lines
+    assert (
+        "Property 'list_prop' was added with value: [complex value]" in lines
+    )
 
 
 def test_plain_deeply_nested():
@@ -272,9 +275,10 @@ def test_plain_deeply_nested():
     }
     
     result = plain(diff)
-    expected = "Property 'database.credentials.password' was updated. From 'secret' to 'new-secret'"
-    
-    assert result == expected
+    assert result == (
+        "Property 'database.credentials.password' was updated. "
+        "From 'secret' to 'new-secret'"
+    )
 
 
 def test_plain_mixed_nested_and_simple():
@@ -338,8 +342,14 @@ def test_plain_complex_changed_values():
     result = plain(diff)
     lines = result.split('\n')
     
-    assert "Property 'dict1' was updated. From [complex value] to [complex value]" in lines
-    assert "Property 'list1' was updated. From [complex value] to [complex value]" in lines
+    assert (
+        "Property 'dict1' was updated. From [complex value] to [complex value]"
+        in lines
+    )
+    assert (
+        "Property 'list1' was updated. From [complex value] to [complex value]"
+        in lines
+    )
 
 
 def test_json_added_property():

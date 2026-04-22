@@ -2,9 +2,14 @@ from .diff_builder import build_diff
 from .formatter import json_formatter, plain, stylish
 
 
-def generate_diff(first_data: dict, second_data: dict, format_name: str = "stylish") -> str:
+def generate_diff(
+    first_data: dict,
+    second_data: dict,
+    format_name: str = "stylish",
+) -> str:
     """
-    Генерирует различия между двумя словарями и возвращает отформатированную строку.
+    Генерирует различия между двумя словарями и возвращает
+    отформатированную строку.
     
     Args:
         first_data: Первый словарь для сравнения

@@ -33,12 +33,17 @@ class DiffNode:
         self.children = children or {}
     
     def __repr__(self):
-        return f"DiffNode(key={self.key}, status={self.status}, old_value={self.old_value}, new_value={self.new_value})"
+        return (
+            f"DiffNode(key={self.key}, status={self.status}, old_value"
+            f"={self.old_value}, new_value={self.new_value})"
+        )
 
 
 def _parse_file_if_needed(data: dict[str, Any] | str) -> dict[str, Any]:
     if isinstance(data, str):
-        if data.endswith(".json") or data.endswith(".yaml") or data.endswith(".yml"):
+        if data.endswith(".json") or (
+            data.endswith(".yaml") or data.endswith(".yml")
+        ):
             path = Path(data)
             extension = path.suffix.lower()
             with open(Path(data), "r") as f:
@@ -51,7 +56,10 @@ def _parse_file_if_needed(data: dict[str, Any] | str) -> dict[str, Any]:
     return data
 
 
-def build_diff(first_data: dict[str, Any] | str, second_data: dict[str, Any] | str) -> dict[str, DiffNode]:
+def build_diff(
+    first_data: dict[str, Any] | str,
+    second_data: dict[str, Any] | str,
+) -> dict[str, DiffNode]:
     """
     Строит внутреннее представление различий между двумя словарями.
     
