@@ -1,5 +1,9 @@
+import json
 from enum import Enum
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 
 class DiffStatus(Enum):
@@ -32,7 +36,22 @@ class DiffNode:
         return f"DiffNode(key={self.key}, status={self.status}, old_value={self.old_value}, new_value={self.new_value})"
 
 
-def build_diff(first_data: dict[str, Any], second_data: dict[str, Any]) -> dict[str, DiffNode]:
+def _parse_file_if_needed(data: dict[str, Any] | str) -> dict[str, Any]:
+    if isinstance(data, str):
+        if data.endswith(".json") or data.endswith(".yaml") or data.endswith(".yml"):
+            path = Path(data)
+            extension = path.suffix.lower()
+            with open(Path(data), "r") as f:
+                if extension == ".json":
+                    return json.load(f)
+                elif extension in (".yml", ".yaml"):
+                    return yaml.safe_load(f)
+        else:
+            return json.load(data)
+    return data
+
+
+def build_diff(first_data: dict[str, Any] | str, second_data: dict[str, Any] | str) -> dict[str, DiffNode]:
     """
     Строит внутреннее представление различий между двумя словарями.
     
@@ -43,6 +62,9 @@ def build_diff(first_data: dict[str, Any], second_data: dict[str, Any]) -> dict[
     Returns:
         Словарь с узлами различий для каждого ключа
     """
+    first_data = _parse_file_if_needed(first_data)
+    second_data = _parse_file_if_needed(second_data)
+
     all_keys = sorted(set(first_data.keys()) | set(second_data.keys()))
     diff_result = {}
     
