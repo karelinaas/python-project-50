@@ -119,7 +119,7 @@ def _format_node(key: str, node: DiffNode, indent: int) -> list[str]:
 
 
 def _format_dict_value(value: dict, indent: int) -> str:
-    """Format dictionary value for output."""
+    """Форматирует словарь для вывода."""
     if not value:
         return "{}"
     lines = ["{"]
@@ -131,7 +131,7 @@ def _format_dict_value(value: dict, indent: int) -> str:
 
 
 def _format_list_value(value: list, indent: int) -> str:
-    """Format list value for output."""
+    """Форматирует список для вывода."""
     if not value:
         return "[]"
     lines = ["["]
