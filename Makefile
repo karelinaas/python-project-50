@@ -9,3 +9,7 @@ package-install:
 
 lint:
 	uv run ruff check gendiff
+
+setup:
+	pip install uv
+	uv sync
