@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from .diff_builder import DiffNode, DiffStatus
+from gendiff.scripts.diff_builder import DiffNode, DiffStatus
 
 
 def stylish(diff: dict[str, DiffNode]) -> str:

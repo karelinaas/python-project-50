@@ -19,7 +19,7 @@ dependencies = [
 test = ["pytest"]
 
 [project.scripts]
-gendiff = "gendiff.main:main"
+gendiff = "gendiff.scripts.main:main"
 
 [build-system]
 requires = ["hatchling"]

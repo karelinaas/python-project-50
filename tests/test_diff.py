@@ -4,7 +4,7 @@ import tempfile
 import yaml
 
 from gendiff import generate_diff
-from gendiff.parser import parse_file
+from gendiff.scripts.parser import parse_file
 
 
 def test_generate_diff_added_key():

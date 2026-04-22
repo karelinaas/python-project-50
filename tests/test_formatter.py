@@ -1,6 +1,6 @@
 import json
-from gendiff.formatter import plain, json_formatter
-from gendiff.diff_builder import DiffNode, DiffStatus
+from gendiff.formatters.formatter import plain, json_formatter
+from gendiff.scripts.diff_builder import DiffNode, DiffStatus
 
 
 def test_plain_added_property():

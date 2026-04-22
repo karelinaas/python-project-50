@@ -1,5 +1,5 @@
-from .diff_builder import build_diff
-from .formatter import json_formatter, plain, stylish
+from gendiff.scripts.diff_builder import build_diff
+from gendiff.formatters.formatter import json_formatter, plain, stylish
 
 
 def generate_diff(
