@@ -2,7 +2,5 @@
 .venv
 *.cast
 *.egg-info
-*.json
-*.yml
 .coverage
 coverage.xml
